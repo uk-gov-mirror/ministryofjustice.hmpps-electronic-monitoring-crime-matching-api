@@ -9,6 +9,9 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
@@ -109,5 +112,27 @@ class CrimeBatchServiceTest {
       verify(crimeBatchRepository, times(1)).save(capture())
       assertThat(firstValue.crimes).isEmpty()
     }
+  }
+
+  @ParameterizedTest(name = "{index} => lat={0}, long={1}, easting={2}, northing={3}")
+  @MethodSource("invalidLocationProvider")
+  fun `it should not save a crime when location data is invalid`(latitude: String?, longitude: String?, easting: String?, northing: String?) {
+    service.ingestCsvData(createCsvRow(latitude = latitude, longitude = longitude, easting = easting, northing = northing).byteInputStream())
+    argumentCaptor<CrimeBatch>().apply {
+      verify(crimeBatchRepository, times(1)).save(capture())
+      assertThat(firstValue.crimes).isEmpty()
+    }
+  }
+
+  companion object {
+    @JvmStatic
+    fun invalidLocationProvider() = listOf(
+      Arguments.of("62", "3", null, null), // out of bounds lat long
+      Arguments.of("invalid", "invalid", null, null), // invalid lat/long
+      Arguments.of(null, null, "-1", "-1"), // out of bounds grid ref
+      Arguments.of(null, null, "invalid", "invalid"), // invalid grid ref
+      Arguments.of("50", "1", "1", "1"), // both location data types
+      Arguments.of(null, null, null, null), // no location data
+    )
   }
 }

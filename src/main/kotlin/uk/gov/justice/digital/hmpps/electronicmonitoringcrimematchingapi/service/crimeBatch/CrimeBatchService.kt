@@ -49,11 +49,11 @@ class CrimeBatchService(
           crimeBatch.crimes.add(crime)
         } else {
           for (violation in crimeDataViolations) {
-            log.debug("Crime data violation found: ${violation.message}")
+            log.error("Crime data violation found: ${violation.message}")
           }
         }
       } catch (e: Exception) {
-        log.debug("Unexpected crime data validation error: ${e.message}")
+        log.error("Unexpected crime data validation error: ${e.message}")
       }
     }
 

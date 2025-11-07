@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotBlank
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.data.ValidationErrors.Crime.INVALID_CRIME_DATE
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.data.ValidationErrors.Crime.INVALID_CRIME_REFERENCE
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.data.ValidationErrors.Crime.INVALID_CRIME_TYPE
+import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.data.ValidationErrors.Crime.INVALID_LOCATION_DATA
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.model.enums.CrimeType
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.validation.annotation.ValidEnum
 import java.time.LocalDateTime
@@ -55,5 +56,41 @@ data class Crime(
     } catch (e: Exception) {
       return false
     }
+  }
+
+  @AssertTrue(message = INVALID_LOCATION_DATA)
+  fun isValidLocationData(): Boolean {
+    val hasGridRef = !easting.isNullOrBlank() && !northing.isNullOrBlank()
+    val hasLatLong = !latitude.isNullOrBlank() && !longitude.isNullOrBlank()
+
+    if (hasGridRef && hasLatLong) {
+      return false
+    }
+
+    return if (hasGridRef) {
+      validGridRef(easting, northing)
+    } else if (hasLatLong) {
+      validLatLong(latitude, longitude)
+    } else {
+      return true
+    }
+  }
+
+  private fun validGridRef(easting: String, northing: String): Boolean = try {
+    val east = easting.toInt()
+    val north = northing.toInt()
+
+    east in 0..600000 && north in 0..1300000
+  } catch (e: NumberFormatException) {
+    false
+  }
+
+  private fun validLatLong(latitude: String, longitude: String): Boolean = try {
+    val lat = latitude.toDouble()
+    val long = longitude.toDouble()
+
+    lat in 49.5..61.5 && long in -8.5..2.6
+  } catch (e: NumberFormatException) {
+    false
   }
 }
