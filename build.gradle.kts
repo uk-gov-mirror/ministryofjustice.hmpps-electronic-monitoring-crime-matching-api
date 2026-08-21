@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.4"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.5"
   kotlin("plugin.spring") version "2.4.10"
   kotlin("plugin.jpa") version "2.4.10"
   jacoco
@@ -19,8 +19,8 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-mail")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
-  implementation("software.amazon.awssdk:athena:2.52.0")
-  implementation("software.amazon.awssdk:s3:2.52.0")
+  implementation("software.amazon.awssdk:athena:2.54.1")
+  implementation("software.amazon.awssdk:s3:2.54.1")
   implementation("org.apache.commons:commons-csv:1.14.1")
   implementation("org.json:json:20260719")
   implementation("uk.gov.service.notify:notifications-java-client:6.2.0-RELEASE")
@@ -38,7 +38,7 @@ dependencies {
   testImplementation("org.springframework.boot:spring-boot-starter-webflux-test")
   testImplementation("org.wiremock:wiremock-standalone:3.13.2")
   testImplementation("org.testcontainers:postgresql:1.21.4")
-  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.46") {
+  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.47") {
     exclude(group = "io.swagger.core.v3")
   }
   testImplementation("org.skyscreamer:jsonassert:1.5.3")
