@@ -17,7 +17,7 @@ interface EmailOutboxRepository : JpaRepository<EmailOutbox, UUID> {
     with candidates as (
       select id
       from email_outbox
-      where state = :pendingState
+      where (state = :pendingState or (state = :failedState and attempts < :maxAttempts))
         and (claimed_at is null or claimed_at < :cutoff)
       order by created_at
       limit 4
@@ -33,6 +33,8 @@ interface EmailOutboxRepository : JpaRepository<EmailOutbox, UUID> {
   )
   fun claimEligibleRows(
     @Param("pendingState") pendingState: String,
+    @Param("failedState") failedState: String,
+    @Param("maxAttempts") maxAttempts: Int,
     @Param("cutoff") cutoff: Instant,
     @Param("now") now: Instant,
   ): List<EmailOutbox>
