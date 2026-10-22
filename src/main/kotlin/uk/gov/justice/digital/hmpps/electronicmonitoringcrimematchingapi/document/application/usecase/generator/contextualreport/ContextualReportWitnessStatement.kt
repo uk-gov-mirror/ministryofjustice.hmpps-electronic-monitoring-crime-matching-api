@@ -3,19 +3,12 @@ package uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.docume
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.contextualreport.ContextualReportRequestParameters
 import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 class ContextualReportWitnessStatement(
   private val createdAt: Instant,
   private val parameters: ContextualReportRequestParameters,
+  private val config: ContextualReportConfig,
 ) {
-  private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC)
-  private val dobFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-  private val periodFormatter = DateTimeFormatter
-    .ofPattern("HH:mm dd/MM/yyyy")
-    .withZone(ZoneOffset.UTC)
-
   private val listBuilder = ReportListBuilder()
   private val paragraphBuilder = ReportParagraphBuilder()
   private val tableBuilder = ReportTableBuilder()
@@ -46,9 +39,9 @@ class ContextualReportWitnessStatement(
       return """
         Further to the statement dated [TODO-Get PA Created Date] regarding an allegation
         of ${crime.type} (Crime Reference No. ${crime.reference}).
-        On ${dateFormatter.format(request.requestedAt)} the EMAC Hub received a request
+        On ${config.isoDateFormatter.format(request.requestedAt)} the EMAC Hub received a request
         in connection with the above investigation for movement data for
-        ${deviceWearer.name}, ${dobFormatter.format(deviceWearer.dateOfBirth)}.
+        ${deviceWearer.name}, ${config.dateFormatter.format(deviceWearer.dateOfBirth)}.
         The request required the following:
       """.trimIndent().replace("\n", " ")
     }
@@ -56,8 +49,8 @@ class ContextualReportWitnessStatement(
   private val statementRequest: String
     get() {
       val name = parameters.deviceWearer.name
-      val start = periodFormatter.format(parameters.reportPeriod.start)
-      val end = periodFormatter.format(parameters.reportPeriod.end)
+      val start = config.dateTimeFormatter.format(parameters.reportPeriod.start)
+      val end = config.dateTimeFormatter.format(parameters.reportPeriod.end)
 
       return "Subject $name movements from $start to $end"
     }
@@ -155,7 +148,7 @@ class ContextualReportWitnessStatement(
   private fun signature() = listOf(
     paragraphBuilder.create("Signature:", spacingAfter = 120),
     paragraphBuilder.create("Manager's name: ${parameters.authorisingManager.name}", spacingAfter = 120),
-    paragraphBuilder.create("Date: ${dateFormatter.format(createdAt)}", spacingAfter = 120),
+    paragraphBuilder.create("Date: ${config.isoDateFormatter.format(createdAt)}", spacingAfter = 120),
     paragraphBuilder.create(
       "Email: mojacquisitivecrimehub@justice.gov.uk (preferred communication method)",
       spacingAfter = 120,

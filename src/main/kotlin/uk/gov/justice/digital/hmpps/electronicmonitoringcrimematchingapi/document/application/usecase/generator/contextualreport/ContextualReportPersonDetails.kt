@@ -2,14 +2,11 @@ package uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.docume
 
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.contextualreport.ContextualReportRequestParameters
-import java.time.format.DateTimeFormatter
 
 class ContextualReportPersonDetails(
   private val parameters: ContextualReportRequestParameters,
+  private val config: ContextualReportConfig,
 ) {
-  private val dateFormatter = DateTimeFormatter
-    .ofPattern("dd/MM/yyyy")
-
   private val header = "Person:"
   private val name = "Full Name"
   private val dateOfBirth = "D.O.B."
@@ -45,7 +42,7 @@ class ContextualReportPersonDetails(
       table = table,
       cells = listOf(
         listOf(paragraphBuilder.create(dateOfBirth)),
-        listOf(paragraphBuilder.create(parameters.deviceWearer.dateOfBirth.format(dateFormatter))),
+        listOf(paragraphBuilder.create(parameters.deviceWearer.dateOfBirth.format(config.dateFormatter))),
       ),
     )
 

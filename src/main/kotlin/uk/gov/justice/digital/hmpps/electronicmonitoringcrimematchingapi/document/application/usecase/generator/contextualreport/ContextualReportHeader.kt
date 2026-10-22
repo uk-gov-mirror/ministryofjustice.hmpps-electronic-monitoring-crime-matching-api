@@ -3,18 +3,13 @@ package uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.docume
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.contextualreport.ContextualReportRequestParameters
 import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 class ContextualReportHeader(
   private val createdAt: Instant,
   private val parameters: ContextualReportRequestParameters,
+  private val config: ContextualReportConfig,
 ) {
-  private val dateFormatter = DateTimeFormatter
-    .ofPattern("dd/MM/yyyy")
-    .withZone(ZoneOffset.UTC)
-
-  private val header = "Date: ${dateFormatter.format(createdAt)}"
+  private val header = "Date: ${config.dateFormatter.format(createdAt)}"
   private val content = "Contextual Movement Report for Crime Reference Number - ${parameters.crime.reference}"
 
   fun addTo(

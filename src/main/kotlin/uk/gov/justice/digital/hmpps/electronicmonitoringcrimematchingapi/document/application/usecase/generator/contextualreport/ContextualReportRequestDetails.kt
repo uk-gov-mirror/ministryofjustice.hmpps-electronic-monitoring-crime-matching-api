@@ -2,20 +2,11 @@ package uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.docume
 
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.contextualreport.ContextualReportRequestParameters
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 class ContextualReportRequestDetails(
   private val parameters: ContextualReportRequestParameters,
+  private val config: ContextualReportConfig,
 ) {
-  private val dateFormatter = DateTimeFormatter
-    .ofPattern("dd/MM/yyyy")
-    .withZone(ZoneOffset.UTC)
-
-  private val timeFormatter = DateTimeFormatter
-    .ofPattern("HH:mm:ss")
-    .withZone(ZoneOffset.UTC)
-
   private val header = "Requested by:"
   private val constabulary = "Constabulary"
   private val from = "From"
@@ -57,7 +48,7 @@ class ContextualReportRequestDetails(
       table = table,
       cells = listOf(
         listOf(paragraphBuilder.create(date)),
-        listOf(paragraphBuilder.create(dateFormatter.format(parameters.reportRequest.requestedAt))),
+        listOf(paragraphBuilder.create(config.dateFormatter.format(parameters.reportRequest.requestedAt))),
       ),
     )
 
@@ -65,7 +56,7 @@ class ContextualReportRequestDetails(
       table = table,
       cells = listOf(
         listOf(paragraphBuilder.create(time)),
-        listOf(paragraphBuilder.create(timeFormatter.format(parameters.reportRequest.requestedAt))),
+        listOf(paragraphBuilder.create(config.timeFormatter.format(parameters.reportRequest.requestedAt))),
       ),
     )
 
