@@ -24,6 +24,10 @@ class DocumentRequestPersistenceMapper(
     artefactReference = request.artefact?.reference,
     artefactFilename = request.artefact?.filename,
     artefactContentType = request.artefact?.contentType,
+    claimedAt = request.claimedAt,
+    attempts = request.attempts,
+    lastError = request.lastError,
+    concurrencyVersion = request.concurrencyVersion,
   )
 
   fun toDomain(entity: DocumentRequestEntity): DocumentRequest = DocumentRequest.rehydrate(
@@ -34,6 +38,10 @@ class DocumentRequestPersistenceMapper(
     createdBy = entity.createdBy,
     createdAt = entity.createdAt,
     artefact = toArtefact(entity),
+    claimedAt = entity.claimedAt,
+    attempts = entity.attempts,
+    lastError = entity.lastError,
+    concurrencyVersion = entity.concurrencyVersion,
   )
 
   private fun toArtefact(entity: DocumentRequestEntity): DocumentArtefact? = entity.artefactReference?.let {

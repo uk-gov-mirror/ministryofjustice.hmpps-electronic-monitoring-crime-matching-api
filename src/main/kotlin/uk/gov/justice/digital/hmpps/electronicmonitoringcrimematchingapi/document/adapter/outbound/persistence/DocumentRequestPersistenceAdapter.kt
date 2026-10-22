@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.application.dto.PaginationRequest
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.application.dto.PaginationResult
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.DocumentRequest
+import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.DocumentRequestStatus
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.DocumentRequestStore
+import java.time.Instant
 import java.util.UUID
 
 @Component
@@ -36,5 +38,14 @@ class DocumentRequestPersistenceAdapter(
     val entity = mapper.toEntity(documentRequest)
     val saved = repository.save(entity)
     return mapper.toDomain(saved)
+  }
+
+  override fun claimEligibleDocumentRequests(
+    batchSize: Int,
+    cutoff: Instant,
+    now: Instant,
+  ): Collection<DocumentRequest> {
+    val entities = repository.claimEligibleDocumentRequests(DocumentRequestStatus.PENDING.name, batchSize, cutoff, now)
+    return entities.map(mapper::toDomain)
   }
 }

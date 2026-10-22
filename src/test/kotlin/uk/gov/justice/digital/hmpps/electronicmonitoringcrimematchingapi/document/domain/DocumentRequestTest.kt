@@ -8,6 +8,7 @@ import java.util.UUID
 
 class DocumentRequestTest {
   private val createdAt = Instant.parse("2026-10-08T12:00:00Z")
+  private val claimedAt = Instant.parse("2026-10-08T13:00:00Z")
 
   private val parameters = givenContextualReportRequestParameters()
 
@@ -38,6 +39,10 @@ class DocumentRequestTest {
       status = DocumentRequestStatus.PENDING,
       createdBy = "user123",
       createdAt = createdAt,
+      claimedAt = claimedAt,
+      attempts = 0,
+      lastError = null,
+      concurrencyVersion = 1L,
     )
 
     assertThat(request.id).isEqualTo(id)
@@ -46,5 +51,9 @@ class DocumentRequestTest {
     assertThat(request.status).isEqualTo(DocumentRequestStatus.PENDING)
     assertThat(request.createdBy).isEqualTo("user123")
     assertThat(request.createdAt).isEqualTo(createdAt)
+    assertThat(request.claimedAt).isEqualTo(claimedAt)
+    assertThat(request.attempts).isEqualTo(0)
+    assertThat(request.lastError).isNull()
+    assertThat(request.concurrencyVersion).isEqualTo(1L)
   }
 }

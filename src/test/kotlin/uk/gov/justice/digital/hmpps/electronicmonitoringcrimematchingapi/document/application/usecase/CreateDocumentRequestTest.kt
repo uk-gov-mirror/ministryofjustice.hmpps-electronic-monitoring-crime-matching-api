@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.documen
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.application.usecase.generator.ContextualReportDocxGenerator
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.application.usecase.generator.DocumentGeneratorRegistry
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.application.usecase.generator.DocumentSensitivityLabeller
+import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.application.usecase.processnextdocumentrequest.ProcessDocumentRequest
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.DocumentRequestStatus
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.domain.DocumentType
 import uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.document.testutils.DocumentRequestParametersFixtures.givenContextualReportRequestParameters
@@ -44,6 +45,12 @@ class CreateDocumentRequestTest {
     documentStore = documentStore,
   )
 
+  private val processNextDocumentRequest = ProcessNextDocumentRequest(
+    documentRequestStore = store,
+    processDocumentRequest = processDocumentRequest,
+    clock = clock,
+  )
+
   private val objectMapper = JsonMapper.builder()
     .findAndAddModules()
     .build()
@@ -53,11 +60,11 @@ class CreateDocumentRequestTest {
     mapper = DocumentRequestMapper(),
     parser = DocumentRequestParameterParser(objectMapper),
     clock = clock,
-    processDocumentRequest = processDocumentRequest,
+    processNextDocumentRequest = processNextDocumentRequest,
   )
 
   @Test
-  fun `it should create and persist a pending contextual report request`() {
+  fun `it should create and persist a contextual report request`() {
     // Given a valid command
     val command = givenCreateDocumentRequestCommand()
 

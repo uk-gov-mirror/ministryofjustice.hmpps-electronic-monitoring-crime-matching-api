@@ -2,5 +2,7 @@ package uk.gov.justice.digital.hmpps.electronicmonitoringcrimematchingapi.docume
 
 enum class DocumentRequestStatus {
   PENDING,
+  FAILED,
+  DEAD,
   COMPLETED,
 }

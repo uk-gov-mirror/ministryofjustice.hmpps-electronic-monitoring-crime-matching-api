@@ -15,7 +15,7 @@ class CreateDocumentRequest(
   private val mapper: DocumentRequestMapper,
   private val parser: DocumentRequestParameterParser,
   private val clock: Clock,
-  private val processDocumentRequest: ProcessDocumentRequest,
+  private val processNextDocumentRequest: ProcessNextDocumentRequest,
 ) {
   fun create(
     request: CreateDocumentRequestCommand,
@@ -32,8 +32,16 @@ class CreateDocumentRequest(
       createdBy = user,
     )
 
-    processDocumentRequest.process(documentRequest)
+    val summary = mapper.toSummary(store.save(documentRequest))
 
-    return mapper.toSummary(store.save(documentRequest))
+    // TODO(ACR-1101): Is this the correct place?
+    // We want to kick off process generation straight away, but don't want to block the thread handling the current request.
+    try {
+      processNextDocumentRequest.process()
+    } catch (_: Exception) {
+      // Do nothing, it will be retried by the scheduled job
+      // TODO(ACR-1101): Add a scheduled job
+    }
+    return summary
   }
 }
