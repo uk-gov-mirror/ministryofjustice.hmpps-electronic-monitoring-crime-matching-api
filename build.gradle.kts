@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.12"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.14"
   kotlin("plugin.spring") version "2.4.21"
   kotlin("plugin.jpa") version "2.4.21"
   jacoco
@@ -18,15 +18,15 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-mail")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
-  implementation("software.amazon.awssdk:athena:2.56.0")
-  implementation("software.amazon.awssdk:s3:2.56.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
+  implementation("software.amazon.awssdk:athena:2.57.7")
+  implementation("software.amazon.awssdk:s3:2.57.7")
   implementation("org.apache.commons:commons-csv:1.14.1")
   implementation("org.json:json:20260814")
   implementation("uk.gov.service.notify:notifications-java-client:6.2.1-RELEASE")
   implementation("org.locationtech.proj4j:proj4j:1.4.3")
   implementation("org.locationtech.proj4j:proj4j-epsg:1.4.3")
-  implementation("io.flipt:flipt-client-java:1.3.4")
+  implementation("io.flipt:flipt-client-java:1.3.5")
   implementation("org.docx4j:docx4j-core:17.3.4")
   implementation("org.docx4j:docx4j-JAXB-ReferenceImpl:17.3.4")
   implementation("org.docx4j:docx4j-export-fo:17.3.4")
